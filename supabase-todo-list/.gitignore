@@ -26,6 +26,9 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+# For sensitive data, create a .env file and add it to .gitignore
+# Never commit .env
+.env
 .env*.local
 
 # vercel
