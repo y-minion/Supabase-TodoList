@@ -13,7 +13,7 @@ function handleError(error) {
   throw new Error(error.message);
 }
 
-export async function getTodos({ searcgInput = "" }) {
+export async function getTodos({ searcgInput = "" }): Promise<TodoRow[]> {
   const supabase = await createServerSupabaseClient();
   //todo 테이블로부터 모든 칼럼(*)을 가져온다. 이때 title 칼럼에서 .like의 두번째 매개변수(Like 조건)에 해당하는 모든 레코드를 가져온다.
   //그리고 정렬 기준(.order)은 created_at칼럼 기준으로 한다. 이때 오름차순으로 정렬한다.
@@ -27,5 +27,35 @@ export async function getTodos({ searcgInput = "" }) {
     handleError(error);
   }
 
+  return data;
+}
+
+export async function createTodo(todo: TodoInsert) {
+  const supabase = await createServerSupabaseClient();
+
+  const { data, error } = await supabase
+    .from("todo")
+    .insert({ ...todo, created_at: new Date().toISOString() });
+
+  if (error) {
+    handleError(error);
+  }
+  return data;
+}
+
+export async function updateTodo(todo: TodoUpdate) {
+  const supabase = await createServerSupabaseClient();
+
+  const { data, error } = await supabase
+    .from("todo")
+    .update({
+      ...todo,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", todo.id);
+
+  if (error) {
+    handleError(error);
+  }
   return data;
 }
